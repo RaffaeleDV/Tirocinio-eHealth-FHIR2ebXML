@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<rim:Classification classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d" classifiedObject="theDocument" nodeRepresentation="">
+    <rim:Slot name="authorPerson">Raffaele</rim:Slot>
+    <rim:Slot name="authorInstitution">Unisa</rim:Slot>
+</rim:Classification>
