@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class Fhir2ebXmlConfiguration {
 
 	private String name;
+	private String authorCodes;
 
 	public String getName() {
 		return name;
@@ -18,6 +19,14 @@ public class Fhir2ebXmlConfiguration {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getAuthorCodes() {
+		return authorCodes;
+	}
+
+	public void setAuthorCodes(String authorCodes) {
+		this.authorCodes = authorCodes;
 	}
 
 }
