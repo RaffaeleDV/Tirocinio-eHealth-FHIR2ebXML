@@ -1,0 +1,23 @@
+{
+	"resourceType": "DocumentReference",
+	"id": "example",
+	"contained": [
+		{
+			"resourceType": "Practitioner",
+			"id": "a2",
+			"name": [
+				{
+					"family": "Smitty",
+					"given": [
+						"Gerald"
+					]
+				}
+			]
+		}
+	],
+	"author": [
+		{
+			"reference": "#a2"
+		}
+	]
+}

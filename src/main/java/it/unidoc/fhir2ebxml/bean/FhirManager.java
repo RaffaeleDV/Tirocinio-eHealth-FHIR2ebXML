@@ -59,7 +59,7 @@ public class FhirManager {
 			e1.printStackTrace();
 		}
 		
-		JSONObject oJ = new JSONObject(jT);
+		JSONObject oJ = new JSONObject(jT);		
 		
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder docBuilder = null;
@@ -71,40 +71,82 @@ public class FhirManager {
 		}
 	    
 	    doc = docBuilder.newDocument();
+	    
+	    Element root = createExtrinsicObject(doc);   
 		
-		readAuthor(oJ);
+		readAuthor(oJ, root);
 		
 		createXML(doc);
 		
 	}
 	
-	private void readAuthor(JSONObject oJ) {
-		// TODO Auto-generated method stub
-		JSONArray arr = oJ.getJSONArray("author");
-		String authorPerson = arr.getJSONObject(0).getString("authorPerson");
-		String authorInstitution = arr.getJSONObject(0).getString("authorInstitution");
-		addAuthor(authorPerson, authorInstitution);
+	private Element createExtrinsicObject(Document doc) {
+		
+		final String stableDocument = "urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1";
+		final String onDemandDocument = "urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248";		
+		
+		Element root = doc.createElement("rim:ExtrinsicObject");
+	    root.setAttribute("id", "");
+	    root.setAttribute("objectType", stableDocument);	
+	    
+	    doc.appendChild(root);
+	    
+	    return root;
 	}
 
-	private void addAuthor(String authorPerson, String authorInstitution) {
-		// TODO Auto-generated method stub
+	private void readAuthor(JSONObject oJ, Element root) {
+		
+		JSONArray arr = oJ.getJSONArray("author");
+		String authorReference = arr.getJSONObject(0).getString("reference");
+		
+		String resType = "";
+		String id = "";
+		String gName = "";
+		String fName = "";	
+		
+		if(authorReference.contains("#")){//Reference contained in the document
+			
+			JSONArray cont = oJ.getJSONArray("contained");
+			resType = cont.getJSONObject(0).getString("resourceType");
+			id = cont.getJSONObject(0).getString("id");
+			gName = cont.getJSONObject(0).getJSONArray("name").getJSONObject(0).getJSONArray("given").getString(0);
+			fName = cont.getJSONObject(0).getJSONArray("name").getJSONObject(0).getString("family");			
+		}
+		
+		String authorInstitution = " ";
+				//arr.getJSONObject(0).getString("authorInstitution");
+		addAuthor(resType, id, gName+fName,authorInstitution, root);
+	}
+
+	private void addAuthor(String resourceType, String id, String authorPerson, String authorInstitution, Element mRoot) {
+		
+		final String authorClass = "urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d";
+		
 		Element root = doc.createElement("rim:Classification");
-		root.setAttribute("classificationScheme", "urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d");
+		root.setAttribute("classificationScheme", authorClass);
 		root.setAttribute("classifiedObject", "theDocument");
 		root.setAttribute("nodeRepresentation", "");	    
-		doc.appendChild(root);
+		mRoot.appendChild(root);
 
 		Element authorname = doc.createElement("rim:Slot");
-		authorname.setAttribute("name", "authorPerson");
-		authorname.setTextContent(authorPerson);
+		authorname.setAttribute("name", "authorPerson");		
+		Element aValueList = doc.createElement("rim:ValueList");
+		Element aValue = doc.createElement("rim:Value");		
+		aValue.setTextContent(authorPerson);
 
 		root.appendChild(authorname);
+		authorname.appendChild(aValueList);
+		aValueList.appendChild(aValue);
 		
 		Element authorinst = doc.createElement("rim:Slot");
 		authorinst.setAttribute("name", "authorInstitution");
-		authorinst.setTextContent(authorInstitution);
+		Element iValueList = doc.createElement("rim:ValueList");
+		Element iValue = doc.createElement("rim:Value");		
+		iValue.setTextContent(authorInstitution);
 
 		root.appendChild(authorinst);
+		authorinst.appendChild(iValueList);
+		iValueList.appendChild(iValue);
 		
 	}
 

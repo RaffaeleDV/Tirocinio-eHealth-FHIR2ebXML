@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<rim:Classification classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d" classifiedObject="theDocument" nodeRepresentation="">
-    <rim:Slot name="authorPerson">Raffaele</rim:Slot>
-    <rim:Slot name="authorInstitution">Unisa</rim:Slot>
-</rim:Classification>
+<rim:ExtrinsicObject id="" objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1">
+    <rim:Classification classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d" classifiedObject="theDocument" nodeRepresentation="">
+        <rim:Slot name="authorPerson">
+            <rim:ValueList>
+                <rim:Value>GeraldSmitty</rim:Value>
+            </rim:ValueList>
+        </rim:Slot>
+        <rim:Slot name="authorInstitution">
+            <rim:ValueList>
+                <rim:Value> </rim:Value>
+            </rim:ValueList>
+        </rim:Slot>
+    </rim:Classification>
+</rim:ExtrinsicObject>
