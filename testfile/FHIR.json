@@ -1,0 +1,126 @@
+{
+  "resourceType" : "DocumentReference",
+  "contained" : [
+    {
+      "resourceType": "Practitioner",
+      "id": "id_1",
+      "name": [
+        {
+          "family": "Smitty",
+          "given": [
+            "Gerald"
+          ]
+        }
+      ]
+    },
+	{
+      "resourceType": "Practitioner",
+      "id": "id_2",
+      "name": [
+        {
+          "family": "Dopplemeyer",
+          "given": [
+            "Sherry"
+          ]
+        }
+      ]
+    }
+  ], 	
+  "masterIdentifier" : { 1.2.42.20210907154740.2 }, 
+  "identifier" : [{}], 
+  "status" : "current",
+  "docStatus" : "<code>",
+  "type" : { 
+    "coding": [
+      {
+        "system": "",
+        "code": "2.16.840.1.113883.6.1",
+        "display": "LABORATORY REPORT.TOTAL"
+      }
+    ] },
+  "category" : [{  
+	"coding": [
+        {
+          "system": "http://ihe.net/xds/connectathon/classCodes",
+          "code": "1.3.6.1.4.1.19376.1.2.6.1",
+          "display": "Treatment Plan or Protocol"
+        }
+      ] }],
+  "subject" : { 
+	"reference":Patient/IHEBLUE-2737^^^&amp;1.3.6.1.4.1.21367.13.20.3000&amp;ISO
+	}, 
+  "date" : "",
+  "author" : [{
+      "reference": "#id_1"
+    },
+	{
+      "reference": "#id_2"
+    }], 
+  "authenticator" : {}, 
+  "custodian" : {}, 
+  "relatesTo" : [{ 
+    "code" : "<code>",
+    "target" : {  }
+  }],
+  "description" : "",
+  "securityLabel" : [{ "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+          "code": "2.16.840.1.113883.5.25",
+          "display": "Restricted"
+        }
+      ]
+	  }], 
+  "content" : [{
+    "attachment" : { 
+		  "contentType" : "application/pdf", 
+		  "language" : "en-us", 
+		  "data" : "", 
+		  "url" : "", 
+		  "size" : "", 
+		  "hash" : "",
+		  "title" : "DocA",
+		  "creation" : "20061224" 
+  }, 
+    "format" : { 
+		"system": "",
+        "code": "1.3.6.1.4.1.19376.1.2.3",
+        "display": "urn:ihe:iti:bppc:2007"
+		} 
+  }],
+  "context" : { 
+    "encounter" : [{}], 
+    "event" : [{ 
+		"coding": [
+          {
+            "system": "",
+            "code": "1.3.6.1.4.1.21367.2017.3",
+            "display": "Foundational Connectathon Read-Access Policy"
+          }
+        ] }],
+    "period" : { 
+		"start": "200612230800",
+        "end": "200612230800"
+	 },
+    "facilityType" : { 
+		"coding": [
+        {
+          "system": "",
+          "code": "2.16.840.1.113883.6.96",
+          "display": "Private home-based care"
+        }
+      ]
+	 },
+    "practiceSetting" : { "coding": [
+        {
+          "system": "",
+          "code": "1.3.6.1.4.1.21367.2017.3",
+          "display": "Pathology"
+        }
+      ] }, 
+    "sourcePatientInfo" : { 
+		Patient/89765a87b^^^&amp;1.2.3.4.5&amp;ISO
+	}, 
+    "related" : [{ }] 
+  }
+}
