@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <rim:ExtrinsicObject id="" objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1">
-    <rim:Classification classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d" classifiedObject="theDocument" nodeRepresentation="">
+    <rim:Classification classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d" classifiedObject="theDocument" id="id_1" nodeRepresentation="" objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification">
         <rim:Slot name="authorPerson">
             <rim:ValueList>
-                <rim:Value>GeraldSmitty</rim:Value>
+                <rim:Value>Gerald Smitty</rim:Value>
+            </rim:ValueList>
+        </rim:Slot>
+        <rim:Slot name="authorInstitution">
+            <rim:ValueList>
+                <rim:Value> </rim:Value>
+            </rim:ValueList>
+        </rim:Slot>
+    </rim:Classification>
+    <rim:Classification classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d" classifiedObject="theDocument" id="id_2" nodeRepresentation="" objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification">
+        <rim:Slot name="authorPerson">
+            <rim:ValueList>
+                <rim:Value>Sherry Dopplemeyer</rim:Value>
             </rim:ValueList>
         </rim:Slot>
         <rim:Slot name="authorInstitution">

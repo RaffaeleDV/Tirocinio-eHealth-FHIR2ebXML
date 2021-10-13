@@ -35,6 +35,7 @@ public class Fhir2ebXmlApplication {
 		
 		m.traslateJSON(file);
 		
+		return;
 		
 		
 		

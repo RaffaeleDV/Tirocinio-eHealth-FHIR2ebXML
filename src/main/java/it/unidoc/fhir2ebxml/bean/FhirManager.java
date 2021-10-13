@@ -17,6 +17,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,7 @@ public class FhirManager {
 		
 		JSONObject oJ = new JSONObject(jT);		
 		
+		//Creazione XML
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder docBuilder = null;
 		try {
@@ -96,36 +98,73 @@ public class FhirManager {
 
 	private void readAuthor(JSONObject oJ, Element root) {
 		
-		JSONArray arr = oJ.getJSONArray("author");
-		String authorReference = arr.getJSONObject(0).getString("reference");
+		JSONArray author = oJ.getJSONArray("author");
+		/*String authorReference = arr.getJSONObject(0).getString("reference");
+		System.out.println(authorReference);
+		String authorReference2 = arr.getJSONObject(1).getString("reference");
+		System.out.println(authorReference2);*/
+		String aID = "";
+		String aName = "";
+		String aSurname = "";
 		
-		String resType = "";
-		String id = "";
-		String gName = "";
-		String fName = "";	
-		
-		if(authorReference.contains("#")){//Reference contained in the document
-			
-			JSONArray cont = oJ.getJSONArray("contained");
-			resType = cont.getJSONObject(0).getString("resourceType");
-			id = cont.getJSONObject(0).getString("id");
-			gName = cont.getJSONObject(0).getJSONArray("name").getJSONObject(0).getJSONArray("given").getString(0);
-			fName = cont.getJSONObject(0).getJSONArray("name").getJSONObject(0).getString("family");			
+		for (int i = 0; true; i++) {//Search authors
+			try {
+				String authorReference = author.getJSONObject(i).getString("reference");
+				System.out.println(authorReference);
+				if (authorReference.contains("#")) {
+					JSONArray contained = oJ.getJSONArray("contained");
+					for (int j = 0; true; j++) {//Search author's data in contained
+						if (!authorReference.contains(contained.getJSONObject(j).getString("id")))
+							continue;
+						aID = contained.getJSONObject(j).getString("id");
+						aName = contained.getJSONObject(j).getJSONArray("name").getJSONObject(0).getJSONArray("given").getString(0);
+						aSurname = contained.getJSONObject(j).getJSONArray("name").getJSONObject(0).getString("family");
+						
+						addAuthor(aID, aName+" "+aSurname," ", root);
+						break;
+					}
+				}
+			} catch (JSONException e) {
+				System.out.printf("Exit i = %d\n", i);
+				break;
+			}
 		}
+		//System.out.printf("Numero autori: %d\n", i);
+		return;
 		
-		String authorInstitution = " ";
+		
+		
+		//String resType = "";
+	
+		/*
+		 * while(true) { if(authorReference.contains("#")){//Reference contained in the
+		 * document
+		 * 
+		 * JSONArray cont = oJ.getJSONArray("contained"); resType =
+		 * cont.getJSONObject(0).getString("resourceType");
+		 * if(!resType.equals("Practitioner")) continue; id =
+		 * cont.getJSONObject(0).getString("id"); if(!id.equals("#id1")) continue; gName
+		 * = cont.getJSONObject(0).getJSONArray("name").getJSONObject(0).getJSONArray(
+		 * "given").getString(0); fName =
+		 * cont.getJSONObject(0).getJSONArray("name").getJSONObject(0).getString(
+		 * "family"); }
+		 */
+		//}
+		//String authorInstitution = " ";
 				//arr.getJSONObject(0).getString("authorInstitution");
-		addAuthor(resType, id, gName+fName,authorInstitution, root);
+		//addAuthor(resType, id, gName+fName,authorInstitution, root);
 	}
 
-	private void addAuthor(String resourceType, String id, String authorPerson, String authorInstitution, Element mRoot) {
-		
+	private void addAuthor(String id, String authorPerson, String authorInstitution, Element mRoot) {
+		System.out.println("Addauthor");
 		final String authorClass = "urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d";
 		
 		Element root = doc.createElement("rim:Classification");
 		root.setAttribute("classificationScheme", authorClass);
 		root.setAttribute("classifiedObject", "theDocument");
-		root.setAttribute("nodeRepresentation", "");	    
+		root.setAttribute("id", id);
+		root.setAttribute("objectType", "urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification");
+		root.setAttribute("nodeRepresentation", ""); 
 		mRoot.appendChild(root);
 
 		Element authorname = doc.createElement("rim:Slot");
