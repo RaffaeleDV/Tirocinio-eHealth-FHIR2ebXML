@@ -35,10 +35,6 @@ public class Fhir2ebXmlApplication {
 		
 		m.traslateJSON(file);
 		
-		return;
-		
-		
-		
 		/*JSONTokener jT = new JSONTokener(new FileReader("C:\\Users\\Raffaele\\Documents\\Università\\tirocinioUniDoc\\DocumentReference-ex-DocumentReferenceMinimal.json"));
 		
 		JSONObject oJ = new JSONObject(jT);
