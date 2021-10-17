@@ -19,6 +19,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.joda.time.base.BaseDateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +44,7 @@ public class FhirManager {
 	//public static int id = 3;
 
 	Document doc = null;
+	String entryUUID = "";
 	HashMap<String, String> translationMap;
 	final private static String translationFilePath = "src\\main\\resources\\translation";
 
@@ -116,14 +118,56 @@ public class FhirManager {
 		
 		createSlot("sourcePatientId", sourcePID.substring(1), root);
 		
+		//System.out.println(sourcePID); 
+		
 		
 		for(int i = 0; true; i++) {
 			try {
 				JSONObject patient = oJ.getJSONArray("contained").getJSONObject(i);
-				if(!patient.getString("id").equals(sourcePID)) continue;
+				//System.out.println(patient.getString("id"));
+				if(!patient.getString("id").equals(sourcePID.substring(1))) continue;
+				//System.out.println("Paziente trovato");
+				String value = patient.getJSONArray("identifier").getJSONObject(0).getString("value");
+				String system = patient.getJSONArray("identifier").getJSONObject(0).getString("system");
+				String surname = patient.getJSONArray("name").getJSONObject(0).getString("family");
+				String name = patient.getJSONArray("name").getJSONObject(0).getJSONArray("given").getString(0);
+				String gender = patient.getString("gender");
+				String bDate = patient.getString("birthDate");
+				String address = patient.getJSONArray("address").getJSONObject(0).getString("text");
 				
-			} catch (JSONException e) {
-				System.out.println("Patient non found.");
+				Element slot = doc.createElement("rim:Slot");
+				slot.setAttribute("name", "sourcePatientInfo");		
+				Element valueList = doc.createElement("rim:ValueList");
+				Element valueE1 = doc.createElement("rim:Value");
+				Element valueE2 = doc.createElement("rim:Value");
+				Element valueE3 = doc.createElement("rim:Value");
+				Element valueE4 = doc.createElement("rim:Value");
+				Element valueE5 = doc.createElement("rim:Value");
+				
+				valueE1.setTextContent("PID-3|"+value+"&"+system+"&ISO");
+				valueE2.setTextContent("PID-5|"+surname+" "+name);
+				
+				String date[] = bDate.split("-");				
+				valueE3.setTextContent("PID-7|"+date[0]+date[1]+date[2]);
+				
+				String g = gender.equalsIgnoreCase("male")?"M":"F";
+				valueE4.setTextContent("PID-8|"+ g);
+				
+				valueE5.setTextContent("PID-11|"+address);
+				
+				slot.appendChild(valueList);
+				valueList.appendChild(valueE1);
+				valueList.appendChild(valueE2);
+				valueList.appendChild(valueE3);
+				valueList.appendChild(valueE4);
+				valueList.appendChild(valueE5);
+				
+				root.appendChild(slot);
+				
+				
+				
+			} catch (JSONException e) {				
+				//e.printStackTrace();
 				break;
 				
 			}
@@ -255,9 +299,9 @@ public class FhirManager {
 	}
 
 	private void readUniqueID(JSONObject oJ, Element root) {
-		JSONArray mID = oJ.getJSONArray("masterIdentifier");
+		JSONObject mID = oJ.getJSONObject("masterIdentifier");
 		
-		String id = mID.getString(0);
+		String id = mID.getString("value");
 		
 		createExternalIdentifier("IdentificationSchemeUniqueID", id, "XDSDocumentEntry.uniqueId", root);		
 	}	
@@ -269,6 +313,10 @@ public class FhirManager {
 		String aID = "";
 		String aName = "";
 		String aSurname = "";
+		String[] authorInstitution = new String[5];
+		int a = 0;
+		String aRole = "";
+		String aSpeciality = "";
 
 		for (int i = 0; true; i++) {//Search authors
 			try {
@@ -277,66 +325,110 @@ public class FhirManager {
 				if (authorReference.contains("#")) {
 					JSONArray contained = oJ.getJSONArray("contained");
 					for (int j = 0; true; j++) {//Search author's data in contained
-						if (!authorReference.contains(contained.getJSONObject(j).getString("id")))
+						if (!(authorReference.contains(contained.getJSONObject(j).getString("id")) && contained.getJSONObject(j).getString("resourceType").equals("Practitioner")))
 							continue;
+						
 						aID = contained.getJSONObject(j).getString("id");
 						aName = contained.getJSONObject(j).getJSONArray("name").getJSONObject(0).getJSONArray("given").getString(0);
 						aSurname = contained.getJSONObject(j).getJSONArray("name").getJSONObject(0).getString("family");
-
-						addAuthor(aID, aName+" "+aSurname," ", root);
+						System.out.println(aName);
 						break;
 					}
+					for (int k = 0; true; k++) {//Search Institution
+						try {
+							if (!(authorReference.contains(contained.getJSONObject(k).getString("id")) && contained.getJSONObject(k).getString("resourceType").equals("Organization")))
+								continue;
+							/*System.out.println(contained.getJSONObject(k).getString("resourceType"));
+							System.out.println(contained.getJSONObject(k).getString("id"));
+							System.out.println(k);*/
+							authorInstitution[a++] = contained.getJSONObject(k).getString("name");
+							
+							
+						} catch (JSONException e) {							
+							//e.printStackTrace();
+							
+							break;
+						}						
+					}
+					for (int l = 0; true; l++) {//Search author role and speciality
+						
+						if (!(authorReference.contains(contained.getJSONObject(l).getString("id")) && contained.getJSONObject(l).getString("resourceType").equals("PractitionerRole")))
+							continue;
+						
+						aRole = contained.getJSONObject(l).getJSONArray("code").getJSONObject(0).getJSONArray("coding").getJSONObject(0).getString("display");
+						aSpeciality = contained.getJSONObject(l).getJSONArray("specialty").getJSONObject(0).getJSONArray("coding").getJSONObject(0).getString("display");						
+						break;
+					}					
+					addAuthor(aID, aSurname+" "+aName, authorInstitution, aRole, aSpeciality, root);
 				}
 			} catch (JSONException e) {
-				System.out.printf("Exit i = %d\n", i);
+				//System.out.printf("Exit i = %d\n", i);
 				break;
 			}
-		}
-		
-
-		
-		//String authorInstitution = " ";
-		//arr.getJSONObject(0).getString("authorInstitution");
-		//addAuthor(resType, id, gName+fName,authorInstitution, root);
+		}		
 	}
 
-	private void addAuthor(String id, String authorPerson, String authorInstitution, Element mRoot) {
+	private void addAuthor(String id, String authorPerson, String[] authorInstitution, String aRole, String aSpeciality, Element mRoot) {
 		
+		//System.out.println("Addauthor");
 		Element root = doc.createElement("rim:Classification");
 		root.setAttribute("classificationScheme", translationMap.get("ClassificationSchemeAuthor"));
-		root.setAttribute("classifiedObject", "theDocument");
+		root.setAttribute("classifiedObject", entryUUID);
 		root.setAttribute("id", id);
 		root.setAttribute("objectType", translationMap.get("objectTypeClassification"));
-		root.setAttribute("nodeRepresentation", "");
-		mRoot.appendChild(root);
+		root.setAttribute("nodeRepresentation", "");		
 
-		Element authorname = doc.createElement("rim:Slot");
-		authorname.setAttribute("name", "authorPerson");		
+		Element authorName = doc.createElement("rim:Slot");
+		authorName.setAttribute("name", "authorPerson");		
 		Element aValueList = doc.createElement("rim:ValueList");
 		Element aValue = doc.createElement("rim:Value");		
 		aValue.setTextContent(authorPerson);
 
-		root.appendChild(authorname);
-		authorname.appendChild(aValueList);
+		root.appendChild(authorName);
+		authorName.appendChild(aValueList);
 		aValueList.appendChild(aValue);
 
-		Element authorinst = doc.createElement("rim:Slot");
-		authorinst.setAttribute("name", "authorInstitution");
+		Element authorInst = doc.createElement("rim:Slot");
+		authorInst.setAttribute("name", "authorInstitution");
 		Element iValueList = doc.createElement("rim:ValueList");
-		Element iValue = doc.createElement("rim:Value");		
-		iValue.setTextContent(authorInstitution);
+		Element iValue = doc.createElement("rim:Value");
+		Element iValue2 = doc.createElement("rim:Value");		
+		iValue.setTextContent(authorInstitution[0]);
+		iValue2.setTextContent(authorInstitution[1]);
 
-		root.appendChild(authorinst);
-		authorinst.appendChild(iValueList);
+		root.appendChild(authorInst);
+		authorInst.appendChild(iValueList);
 		iValueList.appendChild(iValue);
+		iValueList.appendChild(iValue2);
+		
+		Element authorRole = doc.createElement("rim:Slot");
+		authorRole.setAttribute("name", "authorRole");
+		Element rValueList = doc.createElement("rim:ValueList");
+		Element rValue = doc.createElement("rim:Value");			
+		rValue.setTextContent(aRole);	
 
+		root.appendChild(authorRole);
+		authorRole.appendChild(rValueList);
+		rValueList.appendChild(rValue);		
+		
+		Element authorSpec = doc.createElement("rim:Slot");
+		authorSpec.setAttribute("name", "authorSpecialty");
+		Element sValueList = doc.createElement("rim:ValueList");
+		Element sValue = doc.createElement("rim:Value");			
+		sValue.setTextContent(aSpeciality);		
+
+		root.appendChild(authorSpec);
+		authorSpec.appendChild(sValueList);
+		sValueList.appendChild(sValue);		
+		
+		mRoot.appendChild(root);
 	}
 	
 	private void createClassification(String cScheme, String nodeC, String code, String name, Element mRoot, boolean author) {
 		
 		Element root = doc.createElement("rim:Classification");
 		root.setAttribute("classificationScheme", translationMap.get(cScheme));
-		root.setAttribute("classifiedObject", "theDocument");
+		root.setAttribute("classifiedObject", entryUUID);
 		root.setAttribute("id", "id_x");
 		root.setAttribute("objectType", translationMap.get("objectTypeClassification"));
 		root.setAttribute("nodeRepresentation", nodeC);
@@ -369,7 +461,7 @@ public class FhirManager {
 		root.setAttribute("value", value);
 		root.setAttribute("id", "id_x");
 		root.setAttribute("objectType", translationMap.get("objectTypeExternal"));	
-		root.setAttribute("registryObject", "theDocument");
+		root.setAttribute("registryObject", entryUUID);
 		mRoot.appendChild(root);
 		
 		Element nameE = doc.createElement("rim:Name");
@@ -444,7 +536,10 @@ public class FhirManager {
 	private Element createExtrinsicObject(JSONObject oJ, Document doc) {	
 		
 		Element root = doc.createElement("rim:ExtrinsicObject");
-		root.setAttribute("id", "theDocument");		
+		
+		entryUUID = oJ.getJSONArray("identifier").getJSONObject(0).getString("value");
+		
+		root.setAttribute("id", entryUUID);		
 		root.setAttribute("mimeType", oJ.getJSONArray("content").getJSONObject(0).getJSONObject("attachment").getString("contentType"));
 		root.setAttribute("objectType", translationMap.get("ExtrinsicObjectStable"));
 		doc.appendChild(root);

@@ -58,12 +58,92 @@
       "postalCode": "44130"      
        }
        ]
-    }
+    },
+    {
+	  "resourceType" : "Organization",	  
+	  "id" : "id_1",	  
+	  "name" : "Cleveland Clinic"	  
+	},
+	{
+	  "resourceType" : "Organization",	  
+	  "id" : "id_1",	  
+	  "name" : "Parma Community"	  
+	},
+	{
+	  "resourceType" : "PractitionerRole",	 
+	  "id" : "id_1",	  
+	  "code" : [
+		    {
+		      "coding": [
+		        {
+		          "system": "",
+		          "code": "",
+		          "display": "Attending"
+		        }
+		      ]
+		    }
+		  ],
+	  "specialty" : [
+	    {
+	      "coding": [
+	        {
+	          "system": "",
+	          "code": "",
+	          "display": "Orthopedic"
+	        }
+	      ]
+	    }
+	  ]	  
+	},
+	{
+	  "resourceType" : "Organization",	  
+	  "id" : "id_2",	  
+	  "name" : "Cleveland Clinic"	  
+	},
+	{
+	  "resourceType" : "Organization",	  
+	  "id" : "id_2",	  
+	  "name" : "Berea Community"	  
+	},
+	{
+	  "resourceType" : "PractitionerRole",	 
+	  "id" : "id_2",	  
+	  "code" : [
+		    {
+		      "coding": [
+		        {
+		          "system": "",
+		          "code": "",
+		          "display": "Primary Surgon"
+		        }
+		      ]
+		    }
+		  ],
+	  "specialty" : [
+	    {
+	      "coding": [
+	        {
+	          "system": "",
+	          "code": "",
+	          "display": "Orthopedic"
+	        }
+	      ]
+	    }
+	  ]	  
+	}
   ], 	
-  "masterIdentifier" : ["1.2.42.20210907154740.2"], 
-  "identifier" : [{}], 
+  "masterIdentifier" : {
+    "system": "",
+    "value": "1.2.42.20210907154740.2"
+  },  
+  "identifier" :[
+    {
+      "system": "",
+      "value": "urn:uuid:31ae780c-7fd7-4a38-826b-f428b9f8975c"
+    }
+  ], 
   "status" : "current",
-  "docStatus" : "<code>",
+  "docStatus" : "",
   "type" : { 
     "coding": [
       {
