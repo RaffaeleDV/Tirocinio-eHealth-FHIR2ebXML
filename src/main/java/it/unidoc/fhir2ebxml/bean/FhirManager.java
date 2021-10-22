@@ -321,7 +321,7 @@ public class FhirManager {
 		for (int i = 0; true; i++) {//Search authors
 			try {
 				String authorReference = author.getJSONObject(i).getString("reference");
-				System.out.println(authorReference);
+				//System.out.println(authorReference);
 				if (authorReference.contains("#")) {
 					JSONArray contained = oJ.getJSONArray("contained");
 					for (int j = 0; true; j++) {//Search author's data in contained
@@ -331,7 +331,7 @@ public class FhirManager {
 						aID = contained.getJSONObject(j).getString("id");
 						aName = contained.getJSONObject(j).getJSONArray("name").getJSONObject(0).getJSONArray("given").getString(0);
 						aSurname = contained.getJSONObject(j).getJSONArray("name").getJSONObject(0).getString("family");
-						System.out.println(aName);
+						//System.out.println(aName);
 						break;
 					}
 					for (int k = 0; true; k++) {//Search Institution
@@ -577,7 +577,7 @@ public class FhirManager {
 			e.printStackTrace();
 		}
 
-		System.out.println("Creato file XML ");
+		System.out.println("Creato file XML");
 
 	}
 

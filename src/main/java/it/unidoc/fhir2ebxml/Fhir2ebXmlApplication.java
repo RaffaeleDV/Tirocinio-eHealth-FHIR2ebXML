@@ -29,7 +29,7 @@ public class Fhir2ebXmlApplication {
 	public static void main(String[] args) throws FileNotFoundException {
 		SpringApplication.run(Fhir2ebXmlApplication.class, args);
 		
-		String file = "testfile\\FHIR.json";		
+		String file = "testfile\\FHIR.json";	
 		
 		FhirManager m = new FhirManager();
 		
