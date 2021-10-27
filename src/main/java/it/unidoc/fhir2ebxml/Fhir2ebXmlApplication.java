@@ -21,7 +21,7 @@ import it.unidoc.fhir2ebxml.conf.Fhir2ebXmlConfiguration;
 
 @SpringBootApplication
 @EnableConfigurationProperties(Fhir2ebXmlConfiguration.class)
-public class Fhir2ebXmlApplication implements ApplicationRunner {
+public class Fhir2ebXmlApplication /*implements ApplicationRunner */{
 
 	@Autowired
 	private FhirManager m;
@@ -55,16 +55,15 @@ public class Fhir2ebXmlApplication implements ApplicationRunner {
 		
 		//System.out.println(oJ.getString("masterIdentifier").to);
 	}
-
-	@Override
-	public void run(ApplicationArguments args) throws Exception {
-		if (args.getSourceArgs().length < 2)
-			throw new Exception("Invalid parameters. Specify input and output file");
-
-		File in = new File(args.getSourceArgs()[0]);
-		File out = new File(args.getSourceArgs()[1]);
-
-		m.traslateJSON(in, out);
-	}
+	/*
+	 * @Override public void run(ApplicationArguments args) throws Exception { if
+	 * (args.getSourceArgs().length < 2) throw new
+	 * Exception("Invalid parameters. Specify input and output file");
+	 * 
+	 * File in = new File(args.getSourceArgs()[0]); File out = new
+	 * File(args.getSourceArgs()[1]);
+	 * 
+	 * m.translateJSON(in, out); }
+	 */
 
 }

@@ -37,7 +37,7 @@ public class FhirManager {
 	private Document doc = null;
 	private String entryUUID = "";
 
-	public void traslateJSON(File in, File out) throws Exception {
+	public void translateJSON(File in, File out) throws Exception {
 		JSONTokener jT = new JSONTokener(new FileReader(in));
 		JSONObject oJ = new JSONObject(jT);
 
